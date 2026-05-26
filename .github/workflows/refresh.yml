@@ -1,0 +1,47 @@
+name: Refresh news dashboard
+
+on:
+  schedule:
+    # Every hour at minute 0 (UTC). GitHub may delay 1-15 min during peak times.
+    - cron: '0 * * * *'
+  workflow_dispatch:  # also runs manually from the Actions tab
+
+permissions:
+  contents: write  # needed to commit news.json back to the repo
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Scrape, classify, write news.json
+        env:
+          # Optional: when set, classification upgrades from keyword to LLM mode.
+          # Add it under: Settings → Secrets and variables → Actions → New repository secret
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python refresh.py
+
+      - name: Commit updated news.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add news.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "refresh news $(date -u +%Y-%m-%dT%H:%MZ)"
+            git push
+          fi
