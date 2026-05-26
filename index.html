@@ -3,77 +3,1573 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>REDO News Dashboard</title>
+  <title>REDO Strategic Dashboard</title>
   <style>
     :root {
-      --red: #C03A30;
-      --red-dark: #8C2920;
-      --green-bg: #E8F1E5;
-      --green-text: #1C5B12;
-      --green-medium: #4A8A3C;
-      --red-bg: #F8EDE9;
-      --red-text: #7A1A0F;
-      --charcoal: #1F1F1F;
-      --gray: #6B6B6B;
-      --gray-light: #A0A0A0;
-      --stone: #F5F3EE;
-      --cream: #F8F6F2;
-      --border: #ECE9E3;
-      --white: #FFFFFF;
+      --bg:           #0E1015;
+      --panel:        #181B22;
+      --panel-2:      #1F232C;
+      --panel-3:      #262A35;
+      --border:       #2A2E38;
+      --border-soft:  #20242D;
+      --text:         #E8E8EA;
+      --text-soft:    #B0B3BA;
+      --text-mute:    #6A7080;
+      --accent:       #E55C50;
+      --accent-soft:  #401C18;
+      --green:        #5BB87A;
+      --green-bg:     rgba(91,184,122,0.10);
+      --green-border: rgba(91,184,122,0.35);
+      --red:          #E55C50;
+      --red-bg:       rgba(229,92,80,0.10);
+      --red-border:   rgba(229,92,80,0.35);
+      --amber:        #D9A04A;
+      --amber-bg:     rgba(217,160,74,0.12);
+      --gray-btn:     #2A2E38;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-      background: var(--white);
-      color: var(--charcoal);
-      line-height: 1.5;
-      font-size: 15px;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+      font-size: 14.5px;
+      min-height: 100vh;
     }
 
+    /* === HEADER + TABS === */
+
     header {
-      padding: 36px 40px 24px;
-      border-bottom: 2px solid var(--red);
+      padding: 24px 36px 0;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .header-top {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .brand-mark {
+      display: inline-block;
+      padding: 4px 10px;
+      background: var(--text);
+      color: var(--bg);
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing: 2px;
+      border-radius: 2px;
     }
 
     .eyebrow {
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 700;
-      color: var(--red);
+      color: var(--accent);
       letter-spacing: 3px;
       text-transform: uppercase;
-      margin-bottom: 10px;
     }
 
-    h1 {
+    h1.page-title {
       font-family: Georgia, "Times New Roman", serif;
-      font-size: 38px;
-      font-weight: 700;
-      color: var(--charcoal);
-      margin-bottom: 6px;
+      font-size: 30px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
       letter-spacing: -0.5px;
     }
 
-    .subtitle {
+    .page-sub {
       font-style: italic;
-      color: var(--gray);
-      font-size: 14px;
+      color: var(--text-mute);
+      font-size: 13px;
+      margin-bottom: 18px;
     }
 
+    .tabs {
+      display: flex;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-mute);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 12px 18px;
+      cursor: pointer;
+      font-family: inherit;
+      letter-spacing: 0.3px;
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s;
+    }
+
+    .tab-btn:hover { color: var(--text-soft); }
+    .tab-btn.active {
+      color: var(--text);
+      border-bottom-color: var(--accent);
+    }
+
+    /* === LAYOUT === */
+
+    .panel {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 36px;
+    }
+
+    .tab-panel { display: none; padding: 28px 36px 60px; }
+    .tab-panel.active { display: block; }
+
     .meta-bar {
-      padding: 14px 40px;
-      background: var(--cream);
+      padding: 14px 36px;
+      background: var(--panel);
       display: flex;
       gap: 28px;
       align-items: center;
       flex-wrap: wrap;
+      font-size: 12.5px;
+      color: var(--text-mute);
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .meta-bar b { color: var(--text); font-weight: 600; }
+    .meta-bar .pill-opp    { color: var(--green); font-weight: 700; }
+    .meta-bar .pill-threat { color: var(--red);   font-weight: 700; }
+
+    .pill-btn {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      color: var(--text-soft);
+      padding: 3px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 11px;
+      font-family: inherit;
+      margin-left: 6px;
+      transition: all 0.15s;
+    }
+    .pill-btn:hover { color: var(--accent); border-color: var(--accent); }
+    .pill-btn:disabled { opacity: 0.5; cursor: wait; }
+
+    /* === SECTION TITLES === */
+
+    .section-title {
+      font-family: Georgia, serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text);
+      margin: 8px 0 4px;
+    }
+    .section-sub {
+      color: var(--text-mute);
+      font-size: 12.5px;
+      font-style: italic;
+      margin-bottom: 16px;
+    }
+
+    /* === FILTERS / SEARCH === */
+
+    .filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .filter-btn {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      color: var(--text-soft);
+      padding: 7px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 12.5px;
+      font-weight: 500;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+    .filter-btn:hover { border-color: var(--text-mute); color: var(--text); }
+    .filter-btn.active.all         { background: var(--text); color: var(--bg); border-color: var(--text); }
+    .filter-btn.active.opportunity { background: var(--green); color: #0E1015; border-color: var(--green); }
+    .filter-btn.active.threat      { background: var(--red);   color: #0E1015; border-color: var(--red); }
+
+    .search {
+      margin-left: auto;
+      padding: 8px 14px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 999px;
       font-size: 13px;
-      color: var(--gray);
+      width: 240px;
+      font-family: inherit;
+      outline: none;
+    }
+    .search:focus { border-color: var(--text-mute); }
+    .search::placeholder { color: var(--text-mute); }
+
+    /* === CARDS === */
+
+    .card {
+      padding: 16px 20px 14px 24px;
+      margin-bottom: 12px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-left-width: 4px;
+      border-radius: 6px;
+    }
+
+    .card.opportunity {
+      border-left-color: var(--green);
+      background: linear-gradient(to right, var(--green-bg) 0%, var(--panel) 22%);
+    }
+    .card.threat {
+      border-left-color: var(--red);
+      background: linear-gradient(to right, var(--red-bg) 0%, var(--panel) 22%);
+    }
+
+    .card h3 {
+      font-family: Georgia, serif;
+      font-size: 17px;
+      font-weight: 600;
+      margin: 8px 0 6px;
+      color: var(--text);
+      line-height: 1.35;
+    }
+    .card h3 a { color: inherit; text-decoration: none; }
+    .card h3 a:hover { color: var(--accent); }
+
+    .card-meta {
+      font-size: 12px;
+      color: var(--text-mute);
+      margin-bottom: 8px;
+    }
+
+    .card-reason {
+      font-size: 13px;
+      color: var(--text-soft);
+      font-style: italic;
+      padding-top: 8px;
+      border-top: 1px dotted var(--border);
+      line-height: 1.45;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      padding: 3px 9px;
+      border-radius: 3px;
+      vertical-align: middle;
+    }
+    .tag.opportunity        { background: var(--green); color: #0E1015; }
+    .tag.opportunity.medium { background: var(--green); opacity: 0.85; }
+    .tag.opportunity.low    { background: var(--green); opacity: 0.6; }
+    .tag.threat             { background: var(--red);   color: #0E1015; }
+    .tag.threat.medium      { background: var(--red);   opacity: 0.85; }
+    .tag.threat.low         { background: var(--red);   opacity: 0.6; }
+
+    .confidence {
+      font-size: 10px;
+      color: var(--text-mute);
+      margin-left: 6px;
+      font-weight: 500;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      vertical-align: middle;
+    }
+
+    /* === RECOMMENDATIONS === */
+
+    .rec {
+      padding: 18px 22px 18px 26px;
+      margin-bottom: 14px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-left-width: 5px;
+      border-radius: 6px;
+    }
+
+    .rec.opportunity_driven {
+      border-left-color: var(--green);
+      background: linear-gradient(to right, var(--green-bg) 0%, var(--panel) 30%);
+    }
+    .rec.threat_driven {
+      border-left-color: var(--red);
+      background: linear-gradient(to right, var(--red-bg) 0%, var(--panel) 30%);
+    }
+
+    .rec-badges {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .badge {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      padding: 3px 9px;
+      border-radius: 3px;
+    }
+    .badge.urgent       { background: var(--red); color: #0E1015; }
+    .badge.this_quarter { background: var(--amber); color: #0E1015; }
+    .badge.long_term    { background: var(--text-mute); color: var(--bg); }
+    .badge.type-amplify_existing { background: var(--text); color: var(--bg); }
+    .badge.type-new_play         { background: var(--panel-3); color: var(--text-soft); border: 1px solid var(--border); }
+    .badge.opportunity_driven    { background: var(--green); color: #0E1015; }
+    .badge.threat_driven         { background: var(--red);   color: #0E1015; }
+
+    .rec h3 {
+      font-family: Georgia, serif;
+      font-size: 19px;
+      font-weight: 600;
+      margin: 4px 0 10px;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .rec-section {
+      margin: 10px 0;
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--text-soft);
+    }
+
+    .rec-section .label {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 3px;
+    }
+
+    .rec-footer {
+      padding-top: 12px;
+      margin-top: 14px;
+      border-top: 1px dotted var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .rec-sources {
+      font-size: 12px;
+      color: var(--text-mute);
+    }
+    .rec-sources a {
+      color: var(--text-mute);
+      text-decoration: underline;
+      margin-right: 12px;
+    }
+    .rec-sources a:hover { color: var(--accent); }
+
+    .implement-btn {
+      background: var(--accent);
+      color: #0E1015;
+      border: none;
+      padding: 7px 16px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      letter-spacing: 0.3px;
+      transition: all 0.15s;
+    }
+    .implement-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(229,92,80,0.3); }
+
+    /* === IMPLEMENTATION TAB === */
+
+    .impl-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      margin-top: 8px;
+    }
+    @media (max-width: 900px) {
+      .impl-grid { grid-template-columns: 1fr; }
+    }
+
+    .impl-block {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 22px 24px;
+    }
+
+    .impl-block h2 {
+      font-family: Georgia, serif;
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 14px;
+      padding-bottom: 10px;
       border-bottom: 1px solid var(--border);
     }
 
-    .meta-bar b { color: var(--charcoal); font-weight: 600; }
+    .form-row { margin-bottom: 16px; }
+    .form-row label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .form-row .hint {
+      font-size: 11.5px;
+      color: var(--text-mute);
+      font-style: italic;
+      margin-top: 4px;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 9px 12px;
+      border-radius: 4px;
+      font-size: 13.5px;
+      font-family: inherit;
+      outline: none;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--accent);
+    }
+    .form-textarea {
+      min-height: 120px;
+      resize: vertical;
+      line-height: 1.5;
+      font-family: -apple-system, "SF Mono", Menlo, monospace;
+      font-size: 12.5px;
+    }
+    .form-textarea.large { min-height: 200px; }
+    .form-select option { background: var(--panel-2); }
+
+    .file-upload {
+      display: block;
+      padding: 14px;
+      background: var(--panel-2);
+      border: 1.5px dashed var(--border);
+      border-radius: 4px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 12.5px;
+      color: var(--text-soft);
+    }
+    .file-upload:hover { border-color: var(--accent); color: var(--accent); }
+    .file-upload input { display: none; }
+
+    .file-list {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--text-mute);
+    }
+    .file-list .file-item {
+      display: inline-block;
+      background: var(--panel-3);
+      padding: 3px 9px;
+      margin: 3px 4px 0 0;
+      border-radius: 3px;
+      color: var(--text-soft);
+    }
+    .file-list .file-item button {
+      background: none;
+      border: none;
+      color: var(--text-mute);
+      cursor: pointer;
+      margin-left: 4px;
+      font-size: 13px;
+      padding: 0 2px;
+    }
+    .file-list .file-item button:hover { color: var(--accent); }
+
+    .run-btn {
+      background: var(--accent);
+      color: #0E1015;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      letter-spacing: 0.5px;
+      width: 100%;
+      transition: all 0.15s;
+    }
+    .run-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(229,92,80,0.3); }
+    .run-btn:disabled { background: var(--text-mute); cursor: wait; transform: none; box-shadow: none; }
+
+    .ref-images {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .ref-images img {
+      width: 100%;
+      height: auto;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: white;
+    }
+    .no-ref {
+      padding: 24px 16px;
+      text-align: center;
+      color: var(--text-mute);
+      font-style: italic;
+      font-size: 12px;
+      border: 1px dashed var(--border);
+      border-radius: 4px;
+    }
+
+    .play-card {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+    }
+    .play-card .play-num {
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      color: var(--accent);
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .play-card .play-title {
+      font-family: Georgia, serif;
+      font-size: 16px;
+      color: var(--text);
+      margin: 4px 0 6px;
+    }
+    .play-card .play-summary {
+      font-size: 12.5px;
+      color: var(--text-mute);
+      line-height: 1.5;
+    }
+
+    .results {
+      grid-column: 1 / -1;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 6px;
+      padding: 24px 28px;
+      margin-top: 4px;
+      display: none;
+    }
+    .results.active { display: block; }
+    .results h2 {
+      font-family: Georgia, serif;
+      font-size: 19px;
+      color: var(--text);
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .results-body {
+      color: var(--text-soft);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .results-body h1, .results-body h2, .results-body h3 {
+      color: var(--text);
+      font-family: Georgia, serif;
+      margin: 18px 0 8px;
+    }
+    .results-body h1 { font-size: 20px; }
+    .results-body h2 { font-size: 17px; color: var(--accent); }
+    .results-body h3 { font-size: 14.5px; color: var(--text); text-transform: uppercase; letter-spacing: 1px; font-family: inherit; font-weight: 700; }
+    .results-body p  { margin-bottom: 12px; }
+    .results-body ul, .results-body ol { margin: 10px 0 12px 22px; }
+    .results-body li { margin-bottom: 6px; }
+    .results-body code {
+      background: var(--panel-3);
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-size: 12.5px;
+      color: var(--text);
+    }
+    .results-body pre {
+      background: var(--panel-3);
+      padding: 12px 14px;
+      border-radius: 4px;
+      overflow-x: auto;
+      margin: 10px 0;
+      font-size: 12.5px;
+    }
+    .results-body strong { color: var(--text); }
+    .results-body em { color: var(--text-soft); }
+    .results-body a { color: var(--accent); }
+    .results-body blockquote {
+      border-left: 3px solid var(--border);
+      padding-left: 14px;
+      margin: 12px 0;
+      color: var(--text-mute);
+      font-style: italic;
+    }
+
+    .api-key-block {
+      padding: 14px 18px;
+      background: var(--accent-soft);
+      border: 1px solid var(--accent);
+      border-radius: 4px;
+      margin-bottom: 16px;
+      font-size: 12.5px;
+      color: var(--text);
+    }
+    .api-key-block.set {
+      background: rgba(91,184,122,0.08);
+      border-color: var(--green);
+    }
+    .api-key-block strong { color: var(--text); }
+    .api-key-block input {
+      width: 100%;
+      margin-top: 8px;
+      padding: 8px 10px;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 3px;
+      font-size: 12.5px;
+      font-family: "SF Mono", Menlo, monospace;
+    }
+    .api-key-block button {
+      margin-top: 8px;
+      background: var(--accent);
+      color: #0E1015;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 3px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      margin-right: 6px;
+    }
+    .api-key-block button.secondary {
+      background: var(--panel-3);
+      color: var(--text);
+    }
+
+    .empty {
+      padding: 32px 20px;
+      text-align: center;
+      color: var(--text-mute);
+      font-style: italic;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+
+    /* === REFINEMENT CHAT === */
+
+    #refine-thread { margin-top: 4px; }
+
+    .refine-turn {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px dotted var(--border);
+    }
+    .refine-turn .refine-label {
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .refine-turn.user .refine-label { color: var(--text-mute); }
+    .refine-turn.user {
+      background: var(--panel-2);
+      margin-left: -28px;
+      margin-right: -28px;
+      padding: 14px 28px 14px;
+      border-top: 1px solid var(--border);
+      color: var(--text);
+    }
+    .refine-turn.user .refine-body { color: var(--text); font-size: 14px; }
+
+    #refine-ui {
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+    }
+    #refine-ui label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    #refine-input {
+      width: 100%;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 4px;
+      font-size: 13.5px;
+      font-family: inherit;
+      outline: none;
+      min-height: 70px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+    #refine-input:focus { border-color: var(--accent); }
+    .refine-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 10px;
+    }
+    #refine-btn {
+      background: var(--accent);
+      color: #0E1015;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      letter-spacing: 0.4px;
+    }
+    #refine-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(229,92,80,0.3); }
+    #refine-btn:disabled { background: var(--text-mute); cursor: wait; transform: none; box-shadow: none; }
+    .reset-link {
+      background: none;
+      border: none;
+      color: var(--text-mute);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 12px;
+      text-decoration: underline;
+    }
+    .reset-link:hover { color: var(--accent); }
+
+    footer {
+      padding: 28px 36px 40px;
+      text-align: center;
+      color: var(--text-mute);
+      font-size: 11px;
+      border-top: 1px solid var(--border-soft);
+    }
+
+    @media (max-width: 720px) {
+      header, .meta-bar, .tab-panel, footer { padding-left: 18px; padding-right: 18px; }
+      h1.page-title { font-size: 24px; }
+      .search { width: 100%; margin-left: 0; margin-top: 8px; }
+      .filters { gap: 6px; }
+      .tabs { overflow-x: auto; }
+      .impl-grid { gap: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-top">
+      <span class="brand-mark">REDO</span>
+      <span class="eyebrow">SWOT Watch</span>
+    </div>
+    <h1 class="page-title">Strategic Dashboard</h1>
+    <div class="page-sub">News signal, AI recommendations, and an implementation copilot, all in one place.</div>
+
+    <nav class="tabs" id="tabs">
+      <button class="tab-btn active" data-tab="news">News</button>
+      <button class="tab-btn"        data-tab="recommendations">Recommendations</button>
+      <button class="tab-btn"        data-tab="implementation">Implementation</button>
+    </nav>
+  </header>
+
+  <!-- ============ NEWS TAB ============ -->
+  <section class="tab-panel active" data-tab="news">
+    <div class="section-title">News signal</div>
+    <div class="section-sub">All classified opportunities and threats from the latest scrape.</div>
+
+    <div style="background: var(--panel); border: 1px solid var(--border-soft); border-radius: 6px; padding: 12px 16px; margin-bottom: 18px; display: flex; gap: 28px; flex-wrap: wrap; font-size: 12.5px; color: var(--text-mute);">
+      <div><span class="pill-opp" id="opp-count">0</span> opportunities</div>
+      <div><span class="pill-threat" id="threat-count">0</span> threats</div>
+      <div>News refreshed: <b id="last-updated">loading...</b>
+        <button id="refresh-btn" class="pill-btn">↻ refresh</button>
+      </div>
+      <div>Classifier: <b id="classifier-mode">loading...</b></div>
+    </div>
+
+    <div class="filters">
+      <button class="filter-btn active all" data-filter="all">All</button>
+      <button class="filter-btn opportunity" data-filter="opportunity">Opportunities</button>
+      <button class="filter-btn threat" data-filter="threat">Threats</button>
+      <input class="search" id="search" placeholder="Search stories..." />
+    </div>
+
+    <div id="stories"></div>
+  </section>
+
+  <!-- ============ RECOMMENDATIONS TAB ============ -->
+  <section class="tab-panel" data-tab="recommendations">
+    <div class="section-title">Strategic recommendations</div>
+    <div class="section-sub">AI-generated plays based on this week's news signal. Click any card to jump into Implementation.</div>
+
+    <div id="recs-meta" style="font-size: 12px; color: var(--text-mute); margin-bottom: 16px;">Loading...</div>
+    <div id="recs-container"></div>
+  </section>
+
+  <!-- ============ IMPLEMENTATION TAB ============ -->
+  <section class="tab-panel" data-tab="implementation">
+    <div class="section-title">Implementation copilot</div>
+    <div class="section-sub">Pick a play, paste what you're working on (URL, text, or screenshots), get specific recommendations.</div>
+
+    <div id="api-key-block" class="api-key-block">
+      <strong>Anthropic API key needed.</strong> The copilot calls Claude directly from your browser. Your key is stored locally (in <code>localStorage</code>) and is sent only to Anthropic's API. Get one at <a href="https://console.anthropic.com" target="_blank" style="color: var(--accent);">console.anthropic.com</a>.
+      <input type="password" id="api-key-input" placeholder="sk-ant-..." autocomplete="off">
+      <button onclick="saveApiKey()">Save key</button>
+      <button class="secondary" onclick="clearApiKey()">Clear</button>
+    </div>
+
+    <div class="impl-grid">
+
+      <!-- LEFT: input form -->
+      <div class="impl-block">
+        <h2>What you're working on</h2>
+
+        <div class="form-row">
+          <label>Pick a play</label>
+          <select id="play-select" class="form-select" onchange="renderSelectedPlay()">
+            <option value="">Select a play...</option>
+          </select>
+          <div class="hint">The copilot uses the play's strategy as context. Pick "Other" to work on one of the AI recommendations from the Recommendations tab.</div>
+        </div>
+
+        <div class="form-row" id="other-row" style="display:none;">
+          <label>Describe the recommendation</label>
+          <input type="text" id="other-input" class="form-input" placeholder="e.g., 'the agentic commerce one' or 'the Yotpo migration concierge'" />
+          <div class="hint">The copilot reads all current recommendations from the Recommendations tab and matches yours to one of them.</div>
+        </div>
+
+        <div class="form-row">
+          <label>URL (optional)</label>
+          <input type="text" id="url-input" class="form-input" placeholder="https://apps.shopify.com/redo/..." />
+        </div>
+
+        <div class="form-row">
+          <label>Paste content to review</label>
+          <textarea id="content-input" class="form-textarea large" placeholder="Paste the actual copy / page text / current state you want feedback on. The more concrete the input, the more specific the recommendations."></textarea>
+        </div>
+
+        <div class="form-row">
+          <label>Upload screenshots (optional)</label>
+          <label class="file-upload" for="file-input">
+            Click to add screenshots, or drag and drop
+            <input type="file" id="file-input" accept="image/*" multiple onchange="onFilesAdded(event)">
+          </label>
+          <div class="file-list" id="file-list"></div>
+        </div>
+
+        <button class="run-btn" id="run-btn" onclick="runImplementation()">Get recommendations</button>
+      </div>
+
+      <!-- RIGHT: play reference -->
+      <div class="impl-block">
+        <h2>Play reference</h2>
+        <div id="selected-play"></div>
+      </div>
+
+      <!-- BOTTOM: results -->
+      <div class="results" id="results">
+        <h2>Recommendations</h2>
+        <div class="results-body" id="results-body"></div>
+        <div id="refine-thread"></div>
+        <div id="refine-ui" style="display:none;">
+          <label>Refine these recommendations</label>
+          <textarea id="refine-input" placeholder="Ask a follow-up. e.g., 'rewrite the headline more emotionally', 'go deeper on suggestion 2', 'what if we don't have ad budget?'"></textarea>
+          <div class="refine-row">
+            <button id="refine-btn" onclick="refineRecommendations()">Send follow-up</button>
+            <button class="reset-link" onclick="resetConversation()">Start over</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    REDO Strategic Dashboard  ·  news refreshes hourly  ·  recommendations refresh daily  ·  copilot runs on demand
+  </footer>
+
+  <script>
+    // ============ PLAYS DATA ============
+    // Each play has: number, title, ogsm (1-6), summary, references (image filenames)
+    const PLAYS = [
+      { n: 1, ogsm: 1, title: "Klaviyo Bill-Shock Intercept Campaign", summary: "Search ads + cost calculator targeting marketers Googling \"klaviyo too expensive\" the day their bill spikes.", refs: [] },
+      { n: 2, ogsm: 1, title: "Shopify App Store Domination", summary: "Optimize listing for 25 highest-intent terms + sponsored slots. 4.9/5 with ~563 reviews is the moat.", refs: [] },
+      { n: 3, ogsm: 1, title: "Optimize Listings on G2, Capterra, TrustRadius, Software Advice", summary: "Audit listings, run review-collection drive with CS, pursue badges. Klaviyo has 1,000+ reviews, REDO has ~17.", refs: ["play3_g2_features.png", "play3_g2_categories_returns.png", "play3_g2_categories.png", "play3_g2_stars.png"] },
+      { n: 4, ogsm: 1, title: "Lead-Gen Ads with Magnets + Email Nurture", summary: "Google + Meta + LinkedIn ads with calculator/report magnets, 5-touch nurture, demo CTA on touch #4.", refs: [] },
+      { n: 5, ogsm: 2, title: "Yotpo Refugee Migration Sprint", summary: "Yotpo killed email/SMS Dec 2025. Free white-glove migration concierge for first 100 refugees. 6-month window.", refs: [] },
+      { n: 6, ogsm: 2, title: "Reddit + X Listen-and-Respond", summary: "F5Bot monitoring of competitor complaint threads. 60-min reply window with substantive peer-voice replies.", refs: ["play6_reddit_klaviyo.png"] },
+      { n: 7, ogsm: 2, title: "BFCM Post-Mortem Webinar + Risk-Free Recover Trial", summary: "First week of December webinar. Recover is structurally $0/mo + 10% rev-share, no buyer risk.", refs: [] },
+      { n: 8, ogsm: 2, title: "Renewal-Window Retargeting", summary: "StoreLeads finds Shopify stores using Klaviyo by install date. LinkedIn ads to marketing managers in 90-day pre-renewal window.", refs: ["play8_linkedin_ads.png"] },
+      { n: 9, ogsm: 3, title: "\"Carts You Can't Reach\" Interactive Calculator", summary: "3-input calculator showing dollars Recover unlocks from non-opted-in shoppers. Email capture, demo CTA.", refs: [] },
+      { n: 10, ogsm: 3, title: "TCO Calculator (Stack vs. REDO Bundle)", summary: "CFO-ready PDF showing annual savings from consolidating Klaviyo + Loop + ShipStation + Postscript into one REDO bundle.", refs: [] },
+      { n: 11, ogsm: 3, title: "Agency-Partner Referral Engine", summary: "Recruit 25-50 Shopify Plus agencies. 20% recurring commission, white-label TCO calculator, agency-only Slack.", refs: [] },
+      { n: 12, ogsm: 4, title: "State of Post-Purchase Revenue Report", summary: "Annual original-data report. Drop at NRF in January. Becomes the cite-able stat journalists use for 12 months.", refs: [] },
+      { n: 13, ogsm: 5, title: "Founder-Led LinkedIn + X (Build-in-Public)", summary: "CEO and CMO post 3-5x weekly with original data, customer wins tagged with merchants, contrarian takes.", refs: [] },
+      { n: 14, ogsm: 4, title: "Pitch Guest Posts to Industry Publications", summary: "2 posts/month to Practical Ecommerce, eCommerceFuel, Shopify blog, Retail Dive, Modern Retail.", refs: [] },
+      { n: 15, ogsm: 4, title: "Launch REDO Podcast + Podcast Swap Network", summary: "Host operator-interview podcast. Trade guest appearances with peer podcasts to double audience reach.", refs: [] },
+      { n: 16, ogsm: 6, title: "Trade Show Presence (Shoptalk, NRF, eTail East, BFCM Forum)", summary: "Sponsor sessions where REDO is the expert, not just buy booths. Portable Recover demo at the table.", refs: [] },
+      { n: 17, ogsm: 6, title: "Founder Dinners Co-Located with Trade Shows", summary: "Invite-only 10-15 person dinners at each show. No pitch, just curated peer dialogue with marketers + agencies.", refs: [] },
+      { n: 18, ogsm: 5, title: "Launch REDO Academy (Free Online Courses)", summary: "Free 30-minute video courses teaching lifecycle marketing tactics. Marketers up-skilling today become buyers tomorrow.", refs: [] },
+    ];
+
+    const OGSMS = {
+      1: "Be findable when buyers search",
+      2: "Show up in moments of high intent",
+      3: "Make it easy to close",
+      4: "Be the source the category cites",
+      5: "Earn a direct line to marketers",
+      6: "Win the in-person conversation",
+    };
+
+    // REDO context (sent to Claude along with the play context)
+    const REDO_CONTEXT = `REDO is an ecommerce post-purchase platform serving DTC brands on Shopify, Shopify Plus, BigCommerce, Salesforce Commerce Cloud, and CommentSold. The product suite includes returns software (free for brands, funded by shopper protection fees), marketing cloud (email + SMS + Shopper-AI personas), abandoned-cart recovery via human + AI SMS agents (the Recover product, reaches 95% of cart abandoners email/SMS can't legally touch; 3.38% conversion rate, $104.54 AOV, 1,000+ recovered carts), order tracking (Malomo, acquired), and AI customer concierge. Primary competitors: Klaviyo, Yotpo, Loop Returns, Attentive, Omnisend, Mailchimp, ShipStation, Narvar. Mid-market sweet spot ($5M to $50M GMV). 4.9/5 on Shopify App Store (~563 reviews). 400+ Loop accounts displaced at 49% win rate. Recover pricing: $0/mo + 10% revenue share.`;
+
+    // ============ TAB ROUTING ============
+
+    function switchTab(name) {
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.toggle("active", b.dataset.tab === name));
+      document.querySelectorAll(".tab-panel").forEach(p => p.classList.toggle("active", p.dataset.tab === name));
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function handleHashRoute() {
+      const hash = window.location.hash.replace("#", "");
+      if (!hash) return;
+      const [tab, query] = hash.split("?");
+      if (["news", "recommendations", "implementation"].includes(tab)) {
+        switchTab(tab);
+        if (tab === "implementation" && query) {
+          const params = new URLSearchParams(query);
+          const playNum = params.get("play");
+          if (playNum) {
+            document.getElementById("play-select").value = playNum;
+            renderSelectedPlay();
+          }
+        }
+      }
+    }
+
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const t = btn.dataset.tab;
+        window.location.hash = t;
+        switchTab(t);
+      });
+    });
+    window.addEventListener("hashchange", handleHashRoute);
+
+    // ============ FORMAT HELPERS ============
+
+    function formatTime(iso) {
+      if (!iso) return "never";
+      const d = new Date(iso);
+      const diffSec = (Date.now() - d.getTime()) / 1000;
+      if (diffSec < 60) return "just now";
+      if (diffSec < 3600) return Math.round(diffSec / 60) + " min ago";
+      if (diffSec < 86400) return Math.round(diffSec / 3600) + " hours ago";
+      return d.toLocaleDateString() + " " + d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    }
+
+    function formatDate(s) {
+      if (!s) return "";
+      try {
+        const d = new Date(s);
+        if (isNaN(d.getTime())) return s.slice(0, 24);
+        return d.toLocaleDateString();
+      } catch { return s; }
+    }
+
+    function escapeHtml(s) {
+      if (s === null || s === undefined) return "";
+      return String(s).replace(/[<>&"]/g, c => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[c]));
+    }
+
+    // Tiny markdown-to-HTML for the AI response
+    function mdToHtml(md) {
+      let html = escapeHtml(md);
+      html = html.replace(/^### (.+)$/gm, "<h3>$1</h3>");
+      html = html.replace(/^## (.+)$/gm, "<h2>$1</h2>");
+      html = html.replace(/^# (.+)$/gm, "<h1>$1</h1>");
+      html = html.replace(/^\s*[-*] (.+)$/gm, "<li>$1</li>");
+      html = html.replace(/(<li>[\s\S]*?<\/li>)\n(?!<li>)/g, "<ul>$1</ul>\n");
+      html = html.replace(/<\/ul>\n<ul>/g, "");
+      html = html.replace(/^\s*\d+\.\s+(.+)$/gm, "<li>$1</li>");
+      html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+      html = html.replace(/\*(.+?)\*/g, "<em>$1</em>");
+      html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
+      html = html.replace(/\n\n+/g, "</p><p>");
+      html = "<p>" + html + "</p>";
+      html = html.replace(/<p>(<h\d|<ul|<ol|<li)/g, "$1").replace(/(<\/h\d>|<\/ul>|<\/ol>|<\/li>)<\/p>/g, "$1");
+      return html;
+    }
+
+    // ============ NEWS TAB ============
+
+    let allStories = [];
+    let currentFilter = "all";
+
+    async function loadNews() {
+      try {
+        const res = await fetch("news.json?t=" + Date.now());
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const data = await res.json();
+        allStories = data.items || [];
+        document.getElementById("opp-count").textContent = data.stats?.opportunities ?? 0;
+        document.getElementById("threat-count").textContent = data.stats?.threats ?? 0;
+        document.getElementById("last-updated").textContent = formatTime(data.updated);
+        document.getElementById("classifier-mode").textContent = data.stats?.classifier_mode || "keyword";
+        renderStories();
+      } catch (e) {
+        document.getElementById("stories").innerHTML =
+          '<div class="empty">No data yet. The first scrape will populate this within about an hour of enabling the GitHub Actions workflow.</div>';
+      }
+    }
+
+    function renderStories() {
+      const q = document.getElementById("search").value.toLowerCase().trim();
+      const filtered = allStories.filter(s => {
+        if (currentFilter !== "all" && s.classification !== currentFilter) return false;
+        if (q) {
+          const hay = ((s.title || "") + " " + (s.summary || "") + " " + (s.source || "")).toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
+      const container = document.getElementById("stories");
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="empty">No stories match the current filter.</div>';
+        return;
+      }
+      container.innerHTML = filtered.map(s => {
+        const conf = s.confidence || "medium";
+        return `
+        <div class="card ${s.classification}">
+          <span class="tag ${s.classification} ${conf}">${s.classification}</span>
+          <span class="confidence">${conf} confidence</span>
+          <h3><a href="${escapeHtml(s.url)}" target="_blank" rel="noopener">${escapeHtml(s.title)}</a></h3>
+          <div class="card-meta">${escapeHtml(s.source)}  ·  ${formatDate(s.published)}</div>
+          ${s.reasoning ? `<div class="card-reason">${escapeHtml(s.reasoning)}</div>` : ""}
+        </div>`;
+      }).join("");
+    }
+
+    document.querySelectorAll(".filter-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentFilter = btn.dataset.filter;
+        renderStories();
+      });
+    });
+
+    document.getElementById("search").addEventListener("input", renderStories);
+
+    document.getElementById("refresh-btn").addEventListener("click", async () => {
+      const btn = document.getElementById("refresh-btn");
+      btn.disabled = true; btn.textContent = "↻ refreshing...";
+      await Promise.all([loadNews(), loadRecs()]);
+      btn.disabled = false; btn.textContent = "↻ refresh";
+    });
+
+    // ============ RECOMMENDATIONS TAB ============
+
+    async function loadRecs() {
+      try {
+        const res = await fetch("recommendations.json?t=" + Date.now());
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const data = await res.json();
+        renderRecs(data);
+      } catch (e) {
+        document.getElementById("recs-meta").textContent = "Recommendations not available yet.";
+        document.getElementById("recs-container").innerHTML = "";
+      }
+    }
+
+    function renderRecs(data) {
+      const meta = document.getElementById("recs-meta");
+      const container = document.getElementById("recs-container");
+      const recs = data.recommendations || [];
+      if (recs.length === 0) {
+        meta.textContent = "";
+        const reason = data.reason || "No recommendations generated yet.";
+        container.innerHTML = `<div class="empty">${escapeHtml(reason)}</div>`;
+        return;
+      }
+      meta.textContent = `${recs.length} recommendations  ·  generated ${formatTime(data.generated)}  ·  ${data.news_items_considered || 0} stories considered`;
+      container.innerHTML = recs.map((r, idx) => {
+        const typeBadgeText = r.type === "amplify_existing"
+          ? `Amplify Play ${r.existing_play_number}`
+          : "New play";
+        const typeBadgeClass = r.type === "amplify_existing" ? "type-amplify_existing" : "type-new_play";
+        const urgencyLabel = (r.urgency || "").replace(/_/g, " ");
+        const impactLabel = r.impact === "opportunity_driven" ? "Opportunity" : "Threat";
+        const sources = (r.triggering_stories || [])
+          .map((url, i) => `<a href="${escapeHtml(url)}" target="_blank" rel="noopener">source ${i + 1}</a>`).join("");
+
+        const implementPlay = r.type === "amplify_existing" && r.existing_play_number
+          ? r.existing_play_number
+          : "";
+        const implementHash = implementPlay ? `#implementation?play=${implementPlay}` : `#implementation`;
+
+        return `
+        <div class="rec ${r.impact}">
+          <div class="rec-badges">
+            <span class="badge ${r.urgency}">${escapeHtml(urgencyLabel)}</span>
+            <span class="badge ${r.impact}">${impactLabel}-driven</span>
+            <span class="badge ${typeBadgeClass}">${escapeHtml(typeBadgeText)}</span>
+          </div>
+          <h3>${escapeHtml(r.title)}</h3>
+          <div class="rec-section"><span class="label">Context</span>${escapeHtml(r.context)}</div>
+          <div class="rec-section"><span class="label">What to do</span>${escapeHtml(r.action)}</div>
+          <div class="rec-section"><span class="label">Why it'll work</span>${escapeHtml(r.reasoning)}</div>
+          <div class="rec-footer">
+            <div class="rec-sources">${sources ? "Triggered by: " + sources : ""}</div>
+            <button class="implement-btn" onclick="goToImplementation('${implementPlay}')">Implement this →</button>
+          </div>
+        </div>`;
+      }).join("");
+    }
+
+    function goToImplementation(playNum) {
+      const hash = playNum ? `#implementation?play=${playNum}` : "#implementation";
+      window.location.hash = hash;
+      switchTab("implementation");
+      if (playNum) {
+        document.getElementById("play-select").value = playNum;
+        renderSelectedPlay();
+      }
+    }
+
+    // ============ IMPLEMENTATION TAB ============
+
+    let uploadedFiles = [];        // {name, type, base64}
+    let conversationHistory = [];  // {role, content} message objects sent to Claude
+    let currentMode = null;        // "play" or "other"
+    let cachedRecommendations = [];// recommendations.json items (for "Other" mode)
+
+    function populatePlaySelect() {
+      const sel = document.getElementById("play-select");
+      PLAYS.forEach(p => {
+        const opt = document.createElement("option");
+        opt.value = p.n;
+        opt.textContent = `${p.n}. ${p.title}`;
+        sel.appendChild(opt);
+      });
+      // Disabled separator
+      const sep = document.createElement("option");
+      sep.disabled = true;
+      sep.textContent = "──────────────";
+      sel.appendChild(sep);
+      // 19th option: Other
+      const otherOpt = document.createElement("option");
+      otherOpt.value = "other";
+      otherOpt.textContent = "19. Other (a recommendation from the Recommendations tab)";
+      sel.appendChild(otherOpt);
+    }
+
+    function renderSelectedPlay() {
+      const val = document.getElementById("play-select").value;
+      const container = document.getElementById("selected-play");
+      const otherRow = document.getElementById("other-row");
+
+      // "Other" mode: show the description input, render a custom right-panel card
+      if (val === "other") {
+        otherRow.style.display = "block";
+        container.innerHTML = `
+          <div class="play-card">
+            <div class="play-num">Other  ·  AI recommendation match</div>
+            <div class="play-title">Work on a new recommendation</div>
+            <div class="play-summary">Type a name, paraphrase, or a few keywords for one of the recommendations on the Recommendations tab. The copilot reads all current recommendations, matches the closest one, and uses that as its strategic context.</div>
+          </div>
+          <div class="no-ref" style="margin-top:14px;">No reference screenshots, the AI recommendation itself is the brief.</div>
+        `;
+        return;
+      }
+
+      otherRow.style.display = "none";
+
+      if (!val) {
+        container.innerHTML = `<div class="no-ref">Select a play on the left to see its reference materials here.</div>`;
+        return;
+      }
+      const play = PLAYS.find(p => p.n == val);
+      if (!play) { container.innerHTML = ""; return; }
+
+      let refsHtml = "";
+      if (play.refs.length > 0) {
+        refsHtml = `<div style="margin-top:14px;"><div style="font-size:10px;letter-spacing:1.2px;font-weight:700;color:var(--accent);text-transform:uppercase;margin-bottom:6px;">Reference Screenshots</div><div class="ref-images">${play.refs.map(r => `<img src="images/${r}" alt="reference">`).join("")}</div></div>`;
+      } else {
+        refsHtml = `<div class="no-ref" style="margin-top:14px;">No reference screenshots saved for this play yet.</div>`;
+      }
+
+      container.innerHTML = `
+        <div class="play-card">
+          <div class="play-num">Play ${play.n}  ·  OGSM ${play.ogsm}: ${OGSMS[play.ogsm]}</div>
+          <div class="play-title">${escapeHtml(play.title)}</div>
+          <div class="play-summary">${escapeHtml(play.summary)}</div>
+        </div>
+        ${refsHtml}
+      `;
+    }
+
+    function onFilesAdded(event) {
+      const files = Array.from(event.target.files);
+      files.forEach(file => {
+        if (!file.type.startsWith("image/")) {
+          alert("Only image files are supported (PNG, JPG, GIF, WebP).");
+          return;
+        }
+        if (file.size > 5 * 1024 * 1024) {
+          alert(file.name + " is too large (max 5 MB per file).");
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = e => {
+          const base64 = e.target.result.split(",")[1];
+          uploadedFiles.push({ name: file.name, type: file.type, base64 });
+          renderFileList();
+        };
+        reader.readAsDataURL(file);
+      });
+      event.target.value = "";
+    }
+
+    function renderFileList() {
+      const container = document.getElementById("file-list");
+      if (uploadedFiles.length === 0) { container.innerHTML = ""; return; }
+      container.innerHTML = uploadedFiles.map((f, i) =>
+        `<span class="file-item">${escapeHtml(f.name)} <button onclick="removeFile(${i})">×</button></span>`
+      ).join("");
+    }
+
+    function removeFile(idx) {
+      uploadedFiles.splice(idx, 1);
+      renderFileList();
+    }
+
+    // === API KEY MANAGEMENT ===
+
+    function getApiKey() { return localStorage.getItem("anthropic_api_key") || ""; }
+
+    function refreshApiKeyBlock() {
+      const block = document.getElementById("api-key-block");
+      const input = document.getElementById("api-key-input");
+      if (getApiKey()) {
+        block.classList.add("set");
+        block.innerHTML = `<strong>API key saved.</strong> The copilot is ready to call Claude. Your key is stored only in this browser's localStorage. <button onclick="forgetApiKey()" style="background:var(--panel-3);color:var(--text);border:none;padding:4px 12px;border-radius:3px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;margin-left:8px;">Forget key</button>`;
+      } else {
+        block.classList.remove("set");
+        // already has form HTML from initial render
+      }
+    }
+
+    function saveApiKey() {
+      const key = document.getElementById("api-key-input").value.trim();
+      if (!key) { alert("Please paste your API key first."); return; }
+      if (!key.startsWith("sk-ant-")) {
+        if (!confirm("That doesn't look like an Anthropic API key (should start with 'sk-ant-'). Save anyway?")) return;
+      }
+      localStorage.setItem("anthropic_api_key", key);
+      refreshApiKeyBlock();
+    }
+
+    function clearApiKey() {
+      document.getElementById("api-key-input").value = "";
+    }
+
+    function forgetApiKey() {
+      if (confirm("Forget the API key? You'll need to paste it again next time.")) {
+        localStorage.removeItem("anthropic_api_key");
+        location.reload();
+      }
+    }
+
+    // === RUN THE COPILOT ===
+
+    async function runImplementation() {
+      const apiKey = getApiKey();
+      if (!apiKey) {
+        alert("Please save your Anthropic API key first (top of this tab).");
+        return;
+      }
+      const playNum = document.getElementById("play-select").value;
+      if (!playNum) { alert("Please select a play first."); return; }
+
+      const isOther = playNum === "other";
+      let play = null;
+      let otherDescription = "";
+
+      if (isOther) {
+        otherDescription = document.getElementById("other-input").value.trim();
+        if (!otherDescription) {
+          alert("Please describe which recommendation you want to work on.");
+          return;
+        }
+      } else {
+        play = PLAYS.find(p => p.n == playNum);
+      }
+
+      const url = document.getElementById("url-input").value.trim();
+      const content = document.getElementById("content-input").value.trim();
+
+      if (!url && !content && uploadedFiles.length === 0) {
+        alert("Please provide at least one input: a URL, pasted content, or a screenshot.");
+        return;
+      }
+
+      const runBtn = document.getElementById("run-btn");
+      const results = document.getElementById("results");
+      const resultsBody = document.getElementById("results-body");
+      const refineThread = document.getElementById("refine-thread");
+      const refineUi = document.getElementById("refine-ui");
+
+      // Reset conversation state for a fresh run
+      conversationHistory = [];
+      refineThread.innerHTML = "";
+      refineUi.style.display = "none";
+      currentMode = isOther ? "other" : "play";
+
+      // If Other mode, fetch the latest recommendations to pass to Claude
+      if (isOther) {
+        try {
+          const res = await fetch("recommendations.json?t=" + Date.now());
+          const data = await res.json();
+          cachedRecommendations = data.recommendations || [];
+        } catch (e) {
+          cachedRecommendations = [];
+        }
+        if (cachedRecommendations.length === 0) {
+          alert("No AI recommendations available yet. Generate some on the Recommendations tab first, or pick a numbered play.");
+          return;
+        }
+      }
+
+      runBtn.disabled = true;
+      runBtn.textContent = "Thinking... (15-30 seconds)";
+      results.classList.add("active");
+      const headerLabel = isOther
+        ? `match a recommendation to "${otherDescription.slice(0, 60)}"`
+        : `review your input against Play ${play.n}`;
+      resultsBody.innerHTML = `<p style="color:var(--text-mute);font-style:italic;">Asking Claude to ${escapeHtml(headerLabel)}...</p>`;
+
+      const promptText = isOther
+        ? buildOtherPrompt(otherDescription, cachedRecommendations, url, content, uploadedFiles.length)
+        : buildPrompt(play, url, content, uploadedFiles.length);
+
+      // Build the first user message with images + text as content blocks
+      const firstContent = [];
+      uploadedFiles.forEach(img => {
+        firstContent.push({
+          type: "image",
+          source: { type: "base64", media_type: img.type, data: img.base64 }
+        });
+      });
+      firstContent.push({ type: "text", text: promptText });
+      conversationHistory.push({ role: "user", content: firstContent });
+
+      try {
+        const text = await callClaudeWithHistory(apiKey, conversationHistory);
+        conversationHistory.push({ role: "assistant", content: text });
+        resultsBody.innerHTML = mdToHtml(text);
+        refineUi.style.display = "block";
+        results.scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch (e) {
+        resultsBody.innerHTML = `<p style="color:var(--red);"><strong>Error:</strong> ${escapeHtml(e.message)}</p><p style="color:var(--text-mute);font-size:12px;margin-top:8px;">Common causes: invalid API key, rate limit, network issue. Check the browser console for details.</p>`;
+        conversationHistory = [];
+        console.error(e);
+      } finally {
+        runBtn.disabled = false;
+        runBtn.textContent = "Get recommendations";
+      }
+    }
+
+    async function refineRecommendations() {
+      if (conversationHistory.length === 0) {
+        alert("Run an initial recommendation first.");
+        return;
+      }
+      const apiKey = getApiKey();
+      if (!apiKey) { alert("API key needed."); return; }
+
+      const input = document.getElementById("refine-input");
+      const text = input.value.trim();
+      if (!text) { alert("Please type a follow-up question or instruction."); return; }
+
+      const refineBtn = document.getElementById("refine-btn");
+      const thread = document.getElementById("refine-thread");
+
+      // Show user turn immediately
+      const turnIdx = conversationHistory.length;
+      thread.insertAdjacentHTML("beforeend",
+        `<div class="refine-turn user"><div class="refine-label">You</div><div class="refine-body">${escapeHtml(text)}</div></div>`
+        + `<div class="refine-turn assistant" id="thinking-${turnIdx}"><div class="refine-label">Copilot</div><p style="color:var(--text-mute);font-style:italic;">Thinking...</p></div>`
+      );
+      input.value = "";
+
+      // Push user turn to conversation (string content is fine for follow-ups)
+      conversationHistory.push({ role: "user", content: text });
+
+      refineBtn.disabled = true;
+      refineBtn.textContent = "Thinking...";
+
+      try {
+        const reply = await callClaudeWithHistory(apiKey, conversationHistory);
+        conversationHistory.push({ role: "assistant", content: reply });
+        const placeholder = document.getElementById("thinking-" + turnIdx);
+        if (placeholder) {
+          placeholder.outerHTML = `<div class="refine-turn assistant"><div class="refine-label">Copilot</div>${mdToHtml(reply)}</div>`;
+        }
+      } catch (e) {
+        const placeholder = document.getElementById("thinking-" + turnIdx);
+        if (placeholder) {
+          placeholder.outerHTML = `<div class="refine-turn assistant"><div class="refine-label">Copilot</div><p style="color:var(--red);">Error: ${escapeHtml(e.message)}</p></div>`;
+        }
+        // Drop the failed user turn so the next attempt starts clean
+        conversationHistory.pop();
+        console.error(e);
+      } finally {
+        refineBtn.disabled = false;
+        refineBtn.textContent = "Send follow-up";
+        const refineUi = document.getElementById("refine-ui");
+        refineUi.scrollIntoView({ behavior: "smooth", block: "end" });
+      }
+    }
+
+    function resetConversation() {
+      if (!confirm("Start a fresh conversation? Your current recommendations and follow-ups will be cleared.")) return;
+      conversationHistory = [];
+      document.getElementById("results-body").innerHTML = "";
+      document.getElementById("refine-thread").innerHTML = "";
+      document.getElementById("refine-ui").style.display = "none";
+      document.getElementById("results").classList.remove("active");
+    }
+
+    function buildPrompt(play, url, content, numImages) {
+      let prompt = `You are a strategic implementation copilot helping REDO's marketing team improve a specific play. You will also handle follow-up refinement questions, so stay opinionated and concrete.\n\n`;
+      prompt += `=== REDO CONTEXT ===\n${REDO_CONTEXT}\n\n`;
+      prompt += `=== THIS PLAY ===\nPlay ${play.n}: ${play.title}\nStrategic Objective ${play.ogsm}: ${OGSMS[play.ogsm]}\nPlay summary: ${play.summary}\n\n`;
+      prompt += `=== WHAT THE USER IS WORKING ON ===\n`;
+      if (url) prompt += `URL they want feedback on: ${url}\n`;
+      if (content) prompt += `Content they've pasted:\n---\n${content}\n---\n\n`;
+      if (numImages > 0) prompt += `They've also attached ${numImages} screenshot(s) above for you to analyze.\n\n`;
+      prompt += `=== YOUR TASK ===\nReview what they've provided and give specific, actionable recommendations for how to improve it relative to Play ${play.n}. Structure your response in markdown with these four sections (use ## headers):\n\n`;
+      prompt += `## What's working\nList 2-3 specific things they should keep doing.\n\n`;
+      prompt += `## What to change\nList 3-5 specific changes with concrete suggestions. Reference exact words, phrases, or visual elements when possible. No generic advice.\n\n`;
+      prompt += `## Suggested rewrites\nIf there's copy or content to improve, write specific replacement language they can use directly. Use code blocks for short snippets.\n\n`;
+      prompt += `## Why this matters for Play ${play.n}\nTie your recommendations back to the strategic objective and REDO's competitive position. Two or three sentences.\n\n`;
+      prompt += `Be specific, opinionated, and grounded in what they've actually shown you. If you see real content, give real improvements. If a screenshot reveals something, name what you see. The user may ask follow-up questions to refine, drill deeper, or rewrite; treat this as the opening turn of a working conversation.`;
+      return prompt;
+    }
+
+    function buildOtherPrompt(description, recsList, url, content, numImages) {
+      let prompt = `You are a strategic implementation copilot helping REDO's marketing team execute on a recommendation that was generated by their AI strategy agent. You will also handle follow-up refinement questions, so stay opinionated and concrete.\n\n`;
+      prompt += `=== REDO CONTEXT ===\n${REDO_CONTEXT}\n\n`;
+      prompt += `=== USER'S DESCRIPTION OF THE RECOMMENDATION ===\n"${description}"\n\n`;
+      prompt += `=== ALL CURRENT AI RECOMMENDATIONS ===\n`;
+      recsList.forEach((r, i) => {
+        const typeLabel = r.type === "amplify_existing"
+          ? `Amplify existing Play ${r.existing_play_number ?? "?"}`
+          : "New play";
+        prompt += `\n[${i + 1}] ${r.title}\n`;
+        prompt += `    Type: ${typeLabel}\n`;
+        prompt += `    Urgency: ${r.urgency || "n/a"}\n`;
+        prompt += `    Impact: ${r.impact || "n/a"}\n`;
+        prompt += `    Context: ${r.context || ""}\n`;
+        prompt += `    Action: ${r.action || ""}\n`;
+        prompt += `    Reasoning: ${r.reasoning || ""}\n`;
+      });
+      prompt += `\n=== WHAT THE USER IS WORKING ON ===\n`;
+      if (url) prompt += `URL they want feedback on: ${url}\n`;
+      if (content) prompt += `Content they've pasted:\n---\n${content}\n---\n\n`;
+      if (numImages > 0) prompt += `They've also attached ${numImages} screenshot(s) above for you to analyze.\n\n`;
+      prompt += `=== YOUR TASK ===\n`;
+      prompt += `Step 1, match the user's description to ONE of the recommendations above. Pick the closest match even if the wording differs. If it is genuinely ambiguous between two, pick the more likely one and note the alternative.\n\n`;
+      prompt += `Step 2, review the inputs against that recommendation and produce a structured response in markdown with these five sections (use ## headers):\n\n`;
+      prompt += `## Matched recommendation\nState which recommendation number and title you matched to, and one sentence on why. If you had to choose between two, name the runner-up.\n\n`;
+      prompt += `## What's working\n2-3 specific things to keep in the user's inputs.\n\n`;
+      prompt += `## What to change\n3-5 specific changes with concrete suggestions. Reference exact words / visual elements. No generic advice.\n\n`;
+      prompt += `## Suggested rewrites\nReplacement language the user can use directly. Use code blocks for short snippets.\n\n`;
+      prompt += `## Why this matters\nTie the suggestions back to the recommendation's strategic intent and REDO's competitive position. 2-3 sentences.\n\n`;
+      prompt += `Be specific and opinionated. The user may ask follow-up questions to refine, drill deeper, or rewrite; treat this as the opening turn of a working conversation. If you truly cannot match the description to any recommendation, say so and ask one clarifying question instead.`;
+      return prompt;
+    }
+
+    async function callClaudeWithHistory(apiKey, messages) {
+      const body = {
+        model: "claude-sonnet-4-6",
+        max_tokens: 2500,
+        messages
+      };
+
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "x-api-key": apiKey,
+          "anthropic-version": "2023-06-01",
+          "content-type": "application/json",
+          "anthropic-dangerous-direct-browser-access": "true"
+        },
+        body: JSON.stringify(body)
+      });
+
+      if (!res.ok) {
+        let errMsg = "API error " + res.status;
+        try {
+          const errBody = await res.json();
+          if (errBody.error?.message) errMsg += ": " + errBody.error.message;
+        } catch {}
+        throw new Error(errMsg);
+      }
+
+      const data = await res.json();
+      return data.content[0].text;
+    }
+
+    // ============ INIT ============
+
+    populatePlaySelect();
+    renderSelectedPlay();
+    refreshApiKeyBlock();
+    loadNews();
+    loadRecs();
+    handleHashRoute();
+    setInterval(() => { loadNews(); loadRecs(); }, 5 * 60 * 1000);
+  </script>
+
+</body>
+</html>
     .meta-bar .pill-opp { color: var(--green-text); font-weight: 700; }
     .meta-bar .pill-threat { color: var(--red); font-weight: 700; }
 
