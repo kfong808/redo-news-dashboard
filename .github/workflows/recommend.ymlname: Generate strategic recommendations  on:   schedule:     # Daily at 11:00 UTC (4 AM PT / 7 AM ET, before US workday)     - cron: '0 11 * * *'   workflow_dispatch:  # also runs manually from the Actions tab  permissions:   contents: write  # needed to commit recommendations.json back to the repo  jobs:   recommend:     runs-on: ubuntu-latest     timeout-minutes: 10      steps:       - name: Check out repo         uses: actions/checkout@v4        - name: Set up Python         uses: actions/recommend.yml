@@ -1,0 +1,41 @@
+name: Generate strategic recommendations
+
+on:
+  schedule:
+    # Daily at 11:00 UTC (4 AM PT / 7 AM ET, before US workday)
+    - cron: '0 11 * * *'
+  workflow_dispatch:  # also runs manually from the Actions tab
+
+permissions:
+  contents: write  # needed to commit recommendations.json back to the repo
+
+jobs:
+  recommend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Generate recommendations
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python recommender.py
+
+      - name: Commit updated recommendations.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add recommendations.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "refresh recommendations $(date -u +%Y-%m-%dT%H:%MZ)"
+            git push
+          fi
