@@ -29,7 +29,6 @@ GOOGLE_NEWS_TERMS = [
     "Omnisend",
     "Postscript",
     "Shopify",
-    "ecommerce",
     "Mailchimp",
     "ShipStation",
     "Narvar",

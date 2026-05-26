@@ -1,0 +1,6 @@
+{
+  "generated": "2026-05-26T00:00:00Z",
+  "recommendations": [],
+  "status": "no_recommendations",
+  "reason": "Recommendations will appear after the first scheduled run completes. The recommender runs daily at 11 AM UTC (4 AM PT). It requires an ANTHROPIC_API_KEY in the repo's GitHub Secrets to generate output."
+}
