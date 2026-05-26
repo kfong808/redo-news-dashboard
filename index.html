@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>REDO News Dashboard</title>
+  <style>
+    :root {
+      --red: #C03A30;
+      --red-dark: #8C2920;
+      --green-bg: #E8F1E5;
+      --green-text: #1C5B12;
+      --green-medium: #4A8A3C;
+      --red-bg: #F8EDE9;
+      --red-text: #7A1A0F;
+      --charcoal: #1F1F1F;
+      --gray: #6B6B6B;
+      --gray-light: #A0A0A0;
+      --stone: #F5F3EE;
+      --cream: #F8F6F2;
+      --border: #ECE9E3;
+      --white: #FFFFFF;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+      background: var(--white);
+      color: var(--charcoal);
+      line-height: 1.5;
+      font-size: 15px;
+    }
+
+    header {
+      padding: 36px 40px 24px;
+      border-bottom: 2px solid var(--red);
+    }
+
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--red);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 38px;
+      font-weight: 700;
+      color: var(--charcoal);
+      margin-bottom: 6px;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      font-style: italic;
+      color: var(--gray);
+      font-size: 14px;
+    }
+
+    .meta-bar {
+      padding: 14px 40px;
+      background: var(--cream);
+      display: flex;
+      gap: 28px;
+      align-items: center;
+      flex-wrap: wrap;
+      font-size: 13px;
+      color: var(--gray);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .meta-bar b { color: var(--charcoal); font-weight: 600; }
+    .meta-bar .pill-opp { color: var(--green-text); font-weight: 700; }
+    .meta-bar .pill-threat { color: var(--red); font-weight: 700; }
+
+    .filters {
+      padding: 18px 40px 12px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .filter-btn {
+      background: var(--white);
+      border: 1px solid #D6D2C9;
+      color: var(--charcoal);
+      padding: 7px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+
+    .filter-btn:hover { border-color: var(--charcoal); }
+    .filter-btn.active.all { background: var(--charcoal); color: var(--white); border-color: var(--charcoal); }
+    .filter-btn.active.opportunity { background: var(--green-text); color: var(--white); border-color: var(--green-text); }
+    .filter-btn.active.threat { background: var(--red); color: var(--white); border-color: var(--red); }
+
+    .search {
+      margin-left: auto;
+      padding: 8px 14px;
+      border: 1px solid #D6D2C9;
+      border-radius: 999px;
+      font-size: 13px;
+      width: 240px;
+      font-family: inherit;
+      outline: none;
+    }
+    .search:focus { border-color: var(--charcoal); }
+
+    main {
+      padding: 12px 40px 60px;
+    }
+
+    .story {
+      padding: 16px 20px 14px 24px;
+      margin-bottom: 12px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-left-width: 5px;
+      border-radius: 4px;
+      transition: box-shadow 0.15s;
+    }
+
+    .story:hover {
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    .story.opportunity {
+      border-left-color: var(--green-text);
+      background: linear-gradient(to right, var(--green-bg) 0%, rgba(232,241,229,0) 12%);
+    }
+
+    .story.threat {
+      border-left-color: var(--red);
+      background: linear-gradient(to right, var(--red-bg) 0%, rgba(248,237,233,0) 12%);
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      padding: 3px 9px;
+      border-radius: 3px;
+      vertical-align: middle;
+    }
+
+    .tag.opportunity { background: var(--green-text); color: var(--white); }
+    .tag.opportunity.medium { background: var(--green-medium); }
+    .tag.opportunity.low { background: var(--green-medium); opacity: 0.7; }
+
+    .tag.threat { background: var(--red); color: var(--white); }
+    .tag.threat.medium { background: var(--red-dark); }
+    .tag.threat.low { background: var(--red-dark); opacity: 0.7; }
+
+    .confidence {
+      font-size: 10px;
+      color: var(--gray);
+      margin-left: 6px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      vertical-align: middle;
+    }
+
+    .story h3 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 17px;
+      font-weight: 600;
+      margin: 8px 0 6px;
+      color: var(--charcoal);
+      line-height: 1.35;
+    }
+
+    .story h3 a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .story h3 a:hover {
+      color: var(--red);
+      text-decoration: underline;
+    }
+
+    .story-meta {
+      font-size: 12px;
+      color: var(--gray);
+      margin-bottom: 8px;
+    }
+
+    .reasoning {
+      font-size: 13px;
+      color: var(--charcoal);
+      font-style: italic;
+      padding-top: 8px;
+      border-top: 1px dotted #D6D2C9;
+      line-height: 1.4;
+    }
+
+    .empty {
+      padding: 60px 20px;
+      text-align: center;
+      color: var(--gray);
+      font-style: italic;
+    }
+
+    footer {
+      padding: 24px 40px 40px;
+      text-align: center;
+      color: var(--gray-light);
+      font-size: 11px;
+    }
+
+    @media (max-width: 720px) {
+      header, .meta-bar, .filters, main, footer { padding-left: 20px; padding-right: 20px; }
+      h1 { font-size: 30px; }
+      .search { width: 100%; margin-left: 0; margin-top: 8px; }
+      .filters { gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="eyebrow">REDO  ·  SWOT Watch</div>
+    <h1>Ecommerce News Dashboard</h1>
+    <div class="subtitle">Opportunities and threats for REDO, refreshed hourly</div>
+  </header>
+
+  <div class="meta-bar">
+    <div><span class="pill-opp" id="opp-count">0</span> opportunities</div>
+    <div><span class="pill-threat" id="threat-count">0</span> threats</div>
+    <div>Last refreshed: <b id="last-updated">loading...</b></div>
+    <div>Classifier: <b id="classifier-mode">loading...</b></div>
+  </div>
+
+  <div class="filters">
+    <button class="filter-btn active all" data-filter="all">All</button>
+    <button class="filter-btn opportunity" data-filter="opportunity">Opportunities</button>
+    <button class="filter-btn threat" data-filter="threat">Threats</button>
+    <input class="search" id="search" placeholder="Search stories..." />
+  </div>
+
+  <main>
+    <div id="stories"></div>
+  </main>
+
+  <footer>
+    REDO News Dashboard  ·  data refreshes every hour via GitHub Actions
+  </footer>
+
+  <script>
+    let allStories = [];
+    let currentFilter = "all";
+
+    async function load() {
+      try {
+        const res = await fetch("news.json?t=" + Date.now());
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const data = await res.json();
+        allStories = data.items || [];
+        document.getElementById("opp-count").textContent = data.stats?.opportunities ?? 0;
+        document.getElementById("threat-count").textContent = data.stats?.threats ?? 0;
+        document.getElementById("last-updated").textContent = formatTime(data.updated);
+        document.getElementById("classifier-mode").textContent = data.stats?.classifier_mode || "keyword";
+        render();
+      } catch (e) {
+        document.getElementById("stories").innerHTML =
+          '<div class="empty">No data yet. The first scrape will populate this dashboard within about an hour of the GitHub Actions workflow being enabled.</div>';
+      }
+    }
+
+    function formatTime(iso) {
+      if (!iso) return "never";
+      const d = new Date(iso);
+      const diffSec = (Date.now() - d.getTime()) / 1000;
+      if (diffSec < 60) return "just now";
+      if (diffSec < 3600) return Math.round(diffSec / 60) + " min ago";
+      if (diffSec < 86400) return Math.round(diffSec / 3600) + " hours ago";
+      return d.toLocaleDateString() + " " + d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    }
+
+    function formatDate(s) {
+      if (!s) return "";
+      try {
+        const d = new Date(s);
+        if (isNaN(d.getTime())) return s.slice(0, 24);
+        return d.toLocaleDateString();
+      } catch { return s; }
+    }
+
+    function escapeHtml(s) {
+      if (!s) return "";
+      return String(s).replace(/[<>&"]/g, c => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[c]));
+    }
+
+    function render() {
+      const q = document.getElementById("search").value.toLowerCase().trim();
+      const filtered = allStories.filter(s => {
+        if (currentFilter !== "all" && s.classification !== currentFilter) return false;
+        if (q) {
+          const hay = ((s.title || "") + " " + (s.summary || "") + " " + (s.source || "")).toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
+
+      const container = document.getElementById("stories");
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="empty">No stories match the current filter.</div>';
+        return;
+      }
+
+      container.innerHTML = filtered.map(s => {
+        const conf = s.confidence || "medium";
+        return `
+        <div class="story ${s.classification}">
+          <span class="tag ${s.classification} ${conf}">${s.classification}</span>
+          <span class="confidence">${conf} confidence</span>
+          <h3><a href="${escapeHtml(s.url)}" target="_blank" rel="noopener">${escapeHtml(s.title)}</a></h3>
+          <div class="story-meta">${escapeHtml(s.source)}  ·  ${formatDate(s.published)}</div>
+          ${s.reasoning ? `<div class="reasoning">${escapeHtml(s.reasoning)}</div>` : ""}
+        </div>`;
+      }).join("");
+    }
+
+    document.querySelectorAll(".filter-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentFilter = btn.dataset.filter;
+        render();
+      });
+    });
+
+    document.getElementById("search").addEventListener("input", render);
+
+    load();
+    // Re-fetch news.json every 5 minutes so an open browser tab stays fresh
+    setInterval(load, 5 * 60 * 1000);
+  </script>
+</body>
+</html>
