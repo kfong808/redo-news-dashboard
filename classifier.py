@@ -67,7 +67,7 @@ def keyword_classify(item):
         return ("threat", conf, reason)
 
     # Plain competitor mention with no clear threat signal is low-confidence threat
-    if comp_mention and "launch" in text or "new" in text:
+    if comp_mention and ("launch" in text or "new" in text):
         return ("threat", "low", f"Mentions {comp_mention[0].title()}")
 
     return ("skip", "low", "No clear classification")
